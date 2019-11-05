@@ -1,6 +1,8 @@
 <script lang="ts">
-    import VTextField from 'vuetify/lib/components/VTextField';
     import {PropValidator} from 'vue/types/options.js';
+    import VTextField from 'vuetify/lib/components/VTextField/VTextField';
+    import VSelect from 'vuetify/lib/components/VSelect/VSelect';
+    import countries from './countries';
 
     export default VTextField.extend({
         name: 'VuetifyPhoneInput',
@@ -14,60 +16,84 @@
             } as PropValidator<string>,
             type: {
                 type: String,
-                default: () => 'text',
+                default: () => 'tel',
             },
             placeholder: {
                 type: String,
-                default: () => 'Input your phone number here'
+                default: () => '#',
             },
-            counter: {
-                type: Number,
-                default: () => 13,
+            countries: {
+                type: Array,
+                default: () => [],
             },
             countryCode: {
-                type: String,
-                default: () => '31',
-            },
-            countryCodeRequired: {
-                type: Boolean,
-                default: () => false,
+                type: [Number, String],
+                default: () => '',
             },
             prependCountryCode: {
                 type: Boolean,
                 default: () => true,
             },
-            allowCharacteristics: {
+            returnWithCountryCode: {
                 type: Boolean,
-                default: () => false,
-            },
-            disableRules: {
-                type: Boolean,
-                default: () => false,
+                default: () => true,
             },
         },
-        computed: {
-            // defaultRules() {
-            //     if (this.disableRules) return [...this.rules];
-            //
-            //     return [
-            //         () => this.matchesCount() || 'Count does not match',
-            //         () => this.matchesCountryCode() || 'Country code does not match',
-            //         ...this.rules];
-            // },
-            // matchesCount() {
-            //     return this.counter > this.internalValue;
-            // },
-            // matchesCountryCode() {
-            //     if (!this.countryCodeRequired) return true;
-            //
-            //     return (this.internalValue as string).startsWith(this.countryCode);
-            // },
+        data: () => {
+            return {
+                internalCountryCode: null,
+            };
+        },
+        watch: {
+            countryCode: {
+                handler(code) {
+                    this.internalCountryCode = code;
+                },
+                immediate: true,
+            },
         },
         methods: {
             genPrependSlot() {
                 if (!this.prependCountryCode) return false;
 
-                return this.genSlot('prepend', 'outer', '+' + this.countryCode);
+                return this.genSelector();
+            },
+            genSelector() {
+                const selections = this.countries.length ? this.countries : countries.sort((a, b) => Number(a.code) - Number(b.code));
+
+                return this.$createElement(VSelect, {
+                    props: {
+                        items: selections.map((el) => {
+                            return {
+                                text: `${el.name} (+${el.code})`,
+                                value: el.code,
+                            }
+                        }),
+                        placeholder: this.$vuetify.lang.t('vuetify-phone-input.country-placeholder'),
+                        value: String(this.countryCode),
+                    },
+                    on: {
+                        input: this.selectCountry,
+                    },
+                    class: {
+                        'pt-0': true,
+                        'mt-0': true,
+                        'mr-1': true,
+                    },
+                });
+            },
+            onInput(e) {
+                VTextField.options.methods.onInput.call(this, e);
+                const final = this.returnWithCountryCode ? this.prefixCountryCode() : this.internalValue;
+                this.$emit('phone', final);
+            },
+            prefixCountryCode() {
+                return '00' + this.internalCountryCode + this.internalValue;
+            },
+            selectCountry(code: string) {
+                this.$emit('country', this.internalCountryCode = code);
+
+                if (this.returnWithCountryCode) this.$emit('phone', this.prefixCountryCode());
             },
         },
     });
