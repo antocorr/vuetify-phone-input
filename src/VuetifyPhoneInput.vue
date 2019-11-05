@@ -84,7 +84,7 @@
             },
             onInput(e) {
                 VTextField.options.methods.onInput.call(this, e);
-                const final = this.returnWithCountryCode ? this.prefixCountryCode() : this.internalValue;
+                const final = this.returnWithCountryCode && this.prependCountryCode ? this.prefixCountryCode() : this.internalValue;
                 this.$emit('phone', final);
             },
             prefixCountryCode() {
