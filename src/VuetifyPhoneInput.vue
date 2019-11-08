@@ -3,6 +3,7 @@
     import VTextField from 'vuetify/lib/components/VTextField/VTextField';
     import VSelect from 'vuetify/lib/components/VSelect/VSelect';
     import countries from './countries';
+    import {parsePhoneNumberFromString} from 'libphonenumber-js/min/';
 
     export default VTextField.extend({
         name: 'VuetifyPhoneInput',
@@ -41,13 +42,20 @@
         },
         data: () => {
             return {
-                internalCountryCode: null,
+                internalCountryCode: '',
             };
         },
         watch: {
+            value: {
+                handler(value) {
+                    this.parsePhoneNumber(value)
+                },
+                immediate: true,
+            },
             countryCode: {
                 handler(code) {
                     this.internalCountryCode = code;
+                    this.parsePhoneNumber(this.internalValue);
                 },
                 immediate: true,
             },
@@ -69,8 +77,8 @@
                                 value: el.code,
                             }
                         }),
-                        placeholder: this.$vuetify.lang.t('vuetify-phone-input.country-placeholder'),
-                        value: String(this.countryCode),
+                        placeholder: this.placeholder,
+                        value: this.internalCountryCode,
                     },
                     on: {
                         input: this.selectCountry,
@@ -80,20 +88,34 @@
                         'mt-0': true,
                         'mr-1': true,
                     },
+                    ref: 'countrySelector',
                 });
             },
             onInput(e) {
                 VTextField.options.methods.onInput.call(this, e);
-                const final = this.returnWithCountryCode && this.prependCountryCode ? this.prefixCountryCode() : this.internalValue;
-                this.$emit('phone', final);
+
+                this.$emit('phone', this.internalValue);
+            },
+            onBlur(e) {
+                VTextField.options.methods.onBlur.call(this, e);
+
+                this.parsePhoneNumber(e.target.value);
             },
             prefixCountryCode() {
-                return '00' + this.internalCountryCode + this.internalValue;
+                return '+' + this.internalCountryCode + this.internalValue;
             },
             selectCountry(code: string) {
                 this.$emit('country', this.internalCountryCode = code);
 
                 if (this.returnWithCountryCode) this.$emit('phone', this.prefixCountryCode());
+            },
+            parsePhoneNumber(phone: string) {
+                const phoneNumber = parsePhoneNumberFromString(phone);
+
+                if (phoneNumber) {
+                    this.lazyValue = phoneNumber.nationalNumber;
+                    this.internalCountryCode = Number(phoneNumber.countryCallingCode);
+                }
             },
         },
     });
