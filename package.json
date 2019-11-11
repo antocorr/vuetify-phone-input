@@ -1,7 +1,7 @@
 {
     "name": "@kingscode/vuetify-phone-input",
     "description": "A Vuetify form control usable for phone numbers. Supports country code, auto formatting and country code recognition",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "repository": {
         "url": "https://github.com/kingscode/vuetify-phone-input.git",
         "type": "git"
