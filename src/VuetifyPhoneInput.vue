@@ -114,7 +114,7 @@
             },
             preparePhoneNumber(phone: string): string {
                 let final = phone;
-                
+
                 if (!this.prependCountryCode) return this.internalCountryCode + phone;
 
                 if (!final.startsWith('+')) {
