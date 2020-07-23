@@ -1,10 +1,14 @@
 # Vuetify Phone Input
 
+### Example
+
+![Vuetify Phone Input](https://i.imgur.com/CZ0krCz.png)
+
 Please refer to the 
 [TextField](https://vuetifyjs.com/en/components/text-fields)
 if you want to see which inherited props will be available.
 
-### Props:
+### Props
 
 | Name        | Type           | Default  |
 | ------------- |:-------------:| -----:|
