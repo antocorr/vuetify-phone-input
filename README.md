@@ -76,3 +76,5 @@ export default {
 ```
 
 If the consumer enters the following: `+32612345678` when the current selected country does not match, the country will be adjusted accordingly.
+
+Remember that this Phone Input is derived from the `VTextField` from Vuetify, meaning that you can still use the `error-messages`, or `placeholder` attributes for example.
