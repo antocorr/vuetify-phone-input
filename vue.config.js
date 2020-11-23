@@ -1,10 +1,13 @@
-const VuetifyLoader = require('vuetify-loader/lib/plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-    css: {
-        extract: false,
-    },
-    configureWebpack: {
-        plugins: [new VuetifyLoader()],
-    },
+  configureWebpack: {
+    externals: { 'vuetify/lib': 'vuetify/lib' },
+    plugins: [
+      new BundleAnalyzerPlugin()
+    ]
+  },
+  css: {
+    extract: false,
+  },
 };

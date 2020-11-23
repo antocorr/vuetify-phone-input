@@ -27,18 +27,20 @@ if you want to see which inherited props will be available.
 
 
 ### Installation
-
-As of now, you can only use this plugin by declaring it globally as so:
-
-```js
-import Vue from 'vue';
-import VuetifyPhoneInput from '@kingscode/vuetify-phone-input'
-
-Vue.use(VuetifyPhoneInput);
+install the dependency
 ```
-
-Now you can use this component everywhere without having to include it.
-
+npm i @kingscode/vuetify-phone-input
+```
+Then just import the component in the file you need it
+```
+import VuetifyPhoneInput from '@kingscode/vuetify-phone-input';
+```
+And add it to the components in your vue file
+```
+  components: {
+    VuetifyPhoneInput,
+    ...
+```
 
 ### Usage
 
@@ -52,9 +54,13 @@ Now you can use this component everywhere without having to include it.
 </template>
 
 <script lang="js">
+import VuetifyPhoneInput from '@kingscode/vuetify-phone-input';
 
 export default {
     name: 'Home',
+    components: {
+        VuetifyPhoneInput
+    },
     computed: {
         countries: () => [ // we can now provide our own list of countries + codes. Defaults to all possible countries.
             {
